@@ -1,0 +1,94 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.detailsPage{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.askQuestionBtnDiv{
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+.askQuestionBtn{
+    margin: 10px 40px;
+    background-color: #0A95FF;
+    cursor: pointer;
+    padding: 15px 30px;
+    color: #fff;
+    border-style: none;
+    border-radius: 3px;
+}
+
+.titleDetails{
+    margin: 10px 0px 0px 200px ;
+    font-size: 1.5rem;
+}
+
+.body{
+    font-size: 1.2rem;
+    margin: 20px 420px 0 200px;
+    text-align: left;
+}
+
+.qAuthor{
+    margin: 0px 0px 0 200px;
+    font-size: 1.1rem;
+    text-decoration: underline;
+    cursor: pointer;   
+}
+
+.ansSectionTitle{
+    margin: 10px 200px;
+    border-radius: 4px;
+}
+
+.ans{
+    font-size: 1.1rem;
+    margin: 5px 420px 0 200px;
+    text-align: start;
+}
+
+.utils{
+    margin-left: 200px ;
+}
+
+.utils button{
+    margin: 10px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.ansAuthor{
+    text-align: start;
+    margin: 0px 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+.answerDiv{
+    margin-top: 40px;
+    margin-left: 200px;
+}
+
+.inputAns{
+    display: block;
+    margin-top: 10px;
+    padding: 5px;
+    width: 400px;
+    height: 150px;
+    
+}
+
+.postAns{
+    width: 200px;
+    padding: 10px 20px;
+    cursor: pointer;
+
+}
