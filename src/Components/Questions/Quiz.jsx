@@ -11,7 +11,7 @@ function Quiz() {
 
   let { questions } = useSelector((state) => {
     return state;
-  });
+  }  );
 
   console.log("yoooh");
   console.log(questions.questions);
@@ -31,7 +31,7 @@ function Quiz() {
         </div>
 
         <div className="dataList">
-          {questions.questions.map((question) => {
+          {questions.questions.length > 0 ? questions.questions.map((question) => {
             return (
               <div className="dataQuiz">
                 <Link to={`/topquestions/${question.id}`}>
@@ -44,7 +44,7 @@ function Quiz() {
                 </div>
               </div>
             );
-          })}
+          }): <h5>No questions available</h5>};
         </div>
       </div>
     </>

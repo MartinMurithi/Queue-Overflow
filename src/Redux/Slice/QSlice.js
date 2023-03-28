@@ -5,41 +5,89 @@ const initialState = {
   loading: false,
   error: "",
   questions: [],
+  answers: []
 };
 
-export const fetchQuestions = createAsyncThunk("questions/fetch", async(_, thunkApi) => {
-  try {
-    let response = await axios.get("https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions.json");
-    let data = [];
-    let keys = Object.keys(response.data);
-    for (let i = 0; i < keys.length; i++) {
-      let key = keys[i];
-      data.push({ ...response.data[key], id:key});//this line uses the spread operator to store all the objects and their properties corresponding to their key
+const QUESTIONS_API =  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions.json";
+const ANSWERS_API =  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/answers.json";
+
+export const fetchQuestions = createAsyncThunk(
+  "questions/fetch",
+  async (_, thunkApi) => {
+    try {
+      let response = await axios.get(QUESTIONS_API);
+      let data = [];
+      let keys = Object.keys(response.data);
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
+      }
+      
+      return data;
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
     }
-    //console.log(data);
-    return data;
+  }
+);
+
+export const addQuestion = createAsyncThunk(
+  "questions/addquestion",
+  async (payload, thunkapi) => {
+    try {
+      console.log(payload);
+      const newQuestion = await axios.post(QUESTIONS_API, { ...payload });
+      thunkapi.dispatch(fetchQuestions());
+    } catch (error) {
+      thunkapi.rejectWithValue(error);
+    }
+  }
+);
+
+export const addAnswer = createAsyncThunk("answer/addanswer", async (payload, thunkApi) => {
+  try {
+    console.log('yppph');
+    console.log(payload);
+    const newAnswer = await axios.post(ANSWERS_API, { ...payload });
   } catch (error) {
     thunkApi.rejectWithValue(error);
   }
-});
+})
+
+export const fetchAnswers = createAsyncThunk(
+  "answers/fetch",
+  async (_, thunkApi) => {
+    try {
+      let response = await axios.get(ANSWERS_API);
+      let data = [];
+      let keys = Object.keys(response.data);
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
+      }
+      return data;
+      
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
+  }
+);
 
 const QuestionsSlice = createSlice({
   name: "questions slice",
   initialState,
   reducers: {
     updateTodo: (state, action) => {
-            return state;
-    }
+      return state;
+    },
   },
   extraReducers: (builder) => {
+    // FETCH QUESTIONS
     builder.addCase(fetchQuestions.pending, (state, action) => {
-      //console.log("loading....");
       state.loading = true;
       state.error = "";
       state.questions = [];
     });
     builder.addCase(fetchQuestions.fulfilled, (state, action) => {
-      //console.log("Data has been fetched");
       state.loading = false;
       state.error = "";
       state.questions = action.payload;
@@ -50,8 +98,55 @@ const QuestionsSlice = createSlice({
       state.error = action.payload;
       state.questions = [];
     });
+
+    // ADD QUESTION
+    builder.addCase(addQuestion.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(addQuestion.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(addQuestion.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // ADD ANSWER
+    builder.addCase(addAnswer.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(addAnswer.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(addAnswer.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // FETCH ANSWERS
+    builder.addCase(fetchAnswers.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+      state.answers = [];
+    });
+    builder.addCase(fetchAnswers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+      state.answers = action.payload;
+    });
+    builder.addCase(fetchAnswers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.answers = [];
+    });
+
+
   },
 });
 
-export const { updateTodo } = QuestionsSlice.actions;
+ export const { updateTodo } = QuestionsSlice.actions;
 export default QuestionsSlice.reducer;

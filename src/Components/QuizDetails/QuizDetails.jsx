@@ -1,51 +1,70 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { fetchQuestions } from "../../Redux/Slice/QSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { addAnswer, fetchQuestions } from "../../Redux/Slice/QSlice";
 import "../QuizDetails/QuizDetails.css";
 
 function QuizDetails() {
+  const dispatch = useDispatch();
+  let { questionId } = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetchQuestions());
   }, []);
-  const dispatch = useDispatch();
-  let { loading, questions }   = useSelector((state) => state.questions);
-  console.log(questions);
-  let { questionId } = useParams();
 
-  const [questionn, setQuestion] = useState({});
-  const [answer, setAnswers] = useState([]);
+  let questions = useSelector((state) => state.questions.questions);
+  let answers = useSelector((state) => state.questions.answers);
+
+  const [questionn, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
 
   useEffect(() => {
     let question = questions.find((question) => question.id === questionId);
     setQuestion(question);
+    console.log(questionn);
 
-    console.log(question);
-    let ansArr = Object.values(question?.answers);
-    setAnswers([...ansArr]);
-    console.log(answer);
   }, [questionId]);
 
-  
+  const hadleAnswerInput = (event) => {
+    setAnswer(event.target.value);
+  }
+  console.log(answers);
+
+  const handlePostAns = () => {
+    let newAnswer = {
+      questionId: questionId,
+      answer: answer,
+      upvote: 3
+    }
+    dispatch(addAnswer(newAnswer));
+
+  }
+
 
   return (
     <div className="detailsPage">
       <div className="askQuestionBtnDiv">
-        <button className="askQuestionBtn">Ask Question</button>
+        <button
+          className="askQuestionBtn"
+          onClick={() => navigate("/quizinput")}
+        >
+          Ask Question
+        </button>
       </div>
       <div className="questionTitle">
         <h4 className="titleDetails">{questionn?.title}</h4>
-        <p className="body">{questionn?.body}</p>
+        <p className="body">{questionn?.description}</p>
         <p className="qAuthor">{questionn?.author}</p>
       </div>
 
-      <div className="answersDiv">
+      {/* <div className="answersDiv">
         <h3 className="ansSectionTitle">Answers</h3>
-        {answer && answer.length > 0 ? (
+        {answer.length > 0 ? (
           answer.map((answer) => {
             return (
               <div className="ansDisplay">
-                <p className="ans">{answer?.answer}</p>
+                <p className="ans">{answer.answer}</p>
                 <div className="utils">
                   <button className="commentBtn">Comment</button>
                   <button className="acceptAnsBtn">Accept as answer</button>
@@ -57,12 +76,17 @@ function QuizDetails() {
         ) : (
           <h5>This question has no answer</h5>
         )}
-      </div>
+      </div> */}
 
       <div className="answerDiv">
         <h3 className="yourAns">Your answer</h3>
-        <textarea type="text" className="inputAns" placeholder="Enter your answer" />
-        <button className="postAns">Post your answer</button>
+        <textarea
+          type="text"
+          className="inputAns"
+          placeholder="Enter your answer"
+          onChange={hadleAnswerInput}
+        />
+        <button className="postAns" onClick={handlePostAns}>Post your answer</button>
       </div>
     </div>
   );
