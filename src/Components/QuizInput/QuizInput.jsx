@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addQuestion, fetchAnswers } from "../../Redux/Slice/QSlice";
 import "../QuizInput/QuizInput.css";
 
 function QuizInput() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   let answers = useSelector((state) => state.questions.answers);
   console.log(answers);
@@ -28,11 +30,9 @@ function QuizInput() {
     dispatch(addQuestion(newQuestion));
     setTitle("");
     setDescription("");
+    navigate('/topquestions');
   };
-  useEffect(() => {
-    dispatch(fetchAnswers());
-    console.log('ANSWERS');
-  }, []);
+ 
   return (
     <>
       <div className="guideDiv">
@@ -64,6 +64,7 @@ function QuizInput() {
           type="text"
           className="questionTitle"
           placeholder="Enter question title...."
+          value={title}
           onChange={handleTitle}
         />
         <textarea
@@ -72,6 +73,7 @@ function QuizInput() {
           cols="30"
           rows="10"
           placeholder="Enter question description...."
+          value={description}
           onChange={handleDescription}
         ></textarea>
         <button className="postBtn" onClick={handleAddQuestion}>

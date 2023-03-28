@@ -5,11 +5,16 @@ const initialState = {
   loading: false,
   error: "",
   questions: [],
-  answers: []
+  answers: [],
+  comments: []
 };
 
-const QUESTIONS_API =  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions.json";
-const ANSWERS_API =  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/answers.json";
+const QUESTIONS_API =
+  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions.json";
+const ANSWERS_API =
+  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/answers.json";
+const COMMENTS_API =
+  "https://queueoverflow-a52c5-default-rtdb.firebaseio.com/comments.json";
 
 export const fetchQuestions = createAsyncThunk(
   "questions/fetch",
@@ -22,7 +27,7 @@ export const fetchQuestions = createAsyncThunk(
         let key = keys[i];
         data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
       }
-      
+
       return data;
     } catch (error) {
       thunkApi.rejectWithValue(error);
@@ -43,15 +48,18 @@ export const addQuestion = createAsyncThunk(
   }
 );
 
-export const addAnswer = createAsyncThunk("answer/addanswer", async (payload, thunkApi) => {
-  try {
-    console.log('yppph');
-    console.log(payload);
-    const newAnswer = await axios.post(ANSWERS_API, { ...payload });
-  } catch (error) {
-    thunkApi.rejectWithValue(error);
+export const addAnswer = createAsyncThunk(
+  "answer/addanswer",
+  async (payload, thunkApi) => {
+    try {
+      console.log("yppph");
+      console.log(payload);
+      const newAnswer = await axios.post(ANSWERS_API, { ...payload });
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
   }
-})
+);
 
 export const fetchAnswers = createAsyncThunk(
   "answers/fetch",
@@ -65,7 +73,36 @@ export const fetchAnswers = createAsyncThunk(
         data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
       }
       return data;
-      
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  "comment/addcomment",
+  async (payload, thunkApi) => {
+    try {
+      const newComment = await axios.post(COMMENTS_API, { ...payload });
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchComments = createAsyncThunk(
+  "fetchcomments",
+  async (_, thunkApi) => {
+    try {
+      let response = await axios.get(COMMENTS_API);
+      let data = [];
+      let keys = Object.keys(response.data);
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
+      }
+      console.log(data);
+      return data;
     } catch (error) {
       thunkApi.rejectWithValue(error);
     }
@@ -144,9 +181,38 @@ const QuestionsSlice = createSlice({
       state.answers = [];
     });
 
+    // ADD COMMENTS
+    builder.addCase(addComment.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(addComment.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(addComment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
 
+    // FETCH COMMENTS
+    builder.addCase(fetchComments.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+      state.comments = [];
+    });
+    builder.addCase(fetchComments.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = false;
+      state.comments = action.payload;
+    });
+    builder.addCase(fetchComments.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.comments = [];
+    })
   },
 });
 
- export const { updateTodo } = QuestionsSlice.actions;
+export const { updateTodo } = QuestionsSlice.actions;
 export default QuestionsSlice.reducer;
