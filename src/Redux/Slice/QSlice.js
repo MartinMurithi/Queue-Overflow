@@ -1,12 +1,20 @@
+import { async } from "@firebase/util";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleAuth } from "./Firebase_config";
 
 const initialState = {
   loading: false,
   error: "",
   questions: [],
   answers: [],
-  comments: []
+  comments: [],
+  upvotes: 0,
+  downvote: 0,
+  email: "",
+  password: "",
+  user: ""
 };
 
 const QUESTIONS_API =
@@ -23,11 +31,11 @@ export const fetchQuestions = createAsyncThunk(
       let response = await axios.get(QUESTIONS_API);
       let data = [];
       let keys = Object.keys(response.data);
+      let newData = new Array(response.data);
       for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
       }
-
       return data;
     } catch (error) {
       thunkApi.rejectWithValue(error);
@@ -39,7 +47,6 @@ export const addQuestion = createAsyncThunk(
   "questions/addquestion",
   async (payload, thunkapi) => {
     try {
-      console.log(payload);
       const newQuestion = await axios.post(QUESTIONS_API, { ...payload });
       thunkapi.dispatch(fetchQuestions());
     } catch (error) {
@@ -108,6 +115,40 @@ export const fetchComments = createAsyncThunk(
     }
   }
 );
+
+export const signUpWithEmail = createAsyncThunk(
+  "signup/users",
+  async ({email, password}, thunkApi) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log(userCredential.user);
+    console.log('create ac');
+    console.log(userCredential.user);
+    return userCredential;
+  } catch (error) {
+    thunkApi.rejectWithValue(error.message);
+  }
+  });
+
+export const signInWithEmail = createAsyncThunk("login/users", async({ email, password }, thunkApi) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('user loged in');
+    console.log(userCredential.user);
+    return userCredential;
+  } catch (error) {
+    thunkApi.rejectWithValue(error);
+  }
+});
+
+export const signInWithGoogle = createAsyncThunk('googlesignup', async (payload, thunkApi) => {
+  try {
+    const user = await signInWithPopup(auth, googleAuth);
+    console.log(user);
+  } catch (error) {
+    thunkApi.rejectWithValue(error);
+  }
+})
 
 const QuestionsSlice = createSlice({
   name: "questions slice",
@@ -210,7 +251,34 @@ const QuestionsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.comments = [];
-    })
+    });
+
+    builder.addCase(signUpWithEmail.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(signUpWithEmail.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(signUpWithEmail.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+     builder.addCase(signInWithEmail.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(signInWithEmail.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(signInWithEmail.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
   },
 });
 

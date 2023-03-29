@@ -1,7 +1,7 @@
 import React from "react";
 import "../NavBar/Nav.css";
 
-import {NavLink} from 'react-router-dom'
+import { NavLink } from "react-router-dom";
 
 function Nav() {
   return (
@@ -9,8 +9,14 @@ function Nav() {
       <div className="navBar">
         <div className="nav">
           <div className="logo_about">
-           <NavLink to='/'><button className="logoBtn">queue<span>overflow</span> </button></NavLink>
-            <NavLink to='/about' ><button className="aboutBtn">About</button></NavLink>
+            <NavLink to="/">
+              <button className="logoBtn">
+                queue<span>overflow</span>{" "}
+              </button>
+            </NavLink>
+            <NavLink to="/about">
+              <button className="aboutBtn">About</button>
+            </NavLink>
           </div>
 
           <div className="search">
@@ -23,8 +29,16 @@ function Nav() {
           </div>
 
           <div className="sign_log">
-            <NavLink to='/login' ><button className="logIn">Log in</button></NavLink>
-            <NavLink to='/signin' ><button className="signUp">Sign In</button></NavLink>
+            <NavLink to="/account">
+              <button className="logIn">M</button>
+            </NavLink>
+
+            <NavLink to="/login">
+              <button className="logIn">Log in</button>
+            </NavLink>
+            <NavLink to="/signin">
+              <button className="signUp">Sign In</button>
+            </NavLink>
           </div>
         </div>
       </div>

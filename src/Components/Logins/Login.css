@@ -35,6 +35,7 @@ label{
     border-style: none;
     background-color: #0A95FF;
     color: #fff;
+    cursor: pointer;
 }
 
 .signinDiv ,p{

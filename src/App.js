@@ -13,6 +13,7 @@ import Login from './Components/Logins/Login';
 import Signin from './Components/Logins/Signin';
 import Quiz from './Components/Questions/Quiz';
 import QuizDetails from './Components/QuizDetails/QuizDetails';
+import Account from './Components/Account/Account';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route path='topquestions' element={<Quiz />} />
         <Route path='quizinput' element={<QuizInput/>} />
         <Route path='topquestions/:questionId' element={<QuizDetails/>} />
+        <Route path='account' element={<Account/>} />
       </Routes>
     <Footer/>
 
