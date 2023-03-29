@@ -3,14 +3,36 @@
   border: 1px solid #ccc;
   padding: 20px;
   margin-bottom: 20px;
+  height: 100vh;
 }
 
-.account h2 {
+.accountTitle {
   font-size: 24px;
-  margin-bottom: 10px;
+  margin: 10px 0 0 100px;
 }
 
-.account p {
-  font-size: 16px;
-  margin-bottom: 5px;
+.accountDetails{
+  display: flex;
+}
+
+.details, .userInfo{
+  text-align: start;
+  margin: 20px 0px 0 0px;
+  padding: 5px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.imgDiv{
+  border-radius: 50%;
+  margin: 40px 10px 0 150px;
+}
+
+.signoutBtn {
+  margin: 40px 60px 0 100px;
+  padding: 10px 25px 10px 25px;
+  border-style: none;
+  background-color: #0a95ff;
+  color: #ecf7ff;
+  cursor: pointer;
 }

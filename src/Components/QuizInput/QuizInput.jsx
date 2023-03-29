@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addQuestion, fetchAnswers } from "../../Redux/Slice/QSlice";
 import "../QuizInput/QuizInput.css";
+import { auth } from "../../Redux/Slice/Firebase_config";
 
 function QuizInput() {
   const dispatch = useDispatch();
@@ -25,9 +26,12 @@ function QuizInput() {
     let newQuestion = {
       title: title,
       description: description,
+      author: auth.currentUser.displayName,
+      authorId: auth.currentUser.uid
     };
 
     dispatch(addQuestion(newQuestion));
+    console.log(newQuestion);
     setTitle("");
     setDescription("");
     navigate('/topquestions');

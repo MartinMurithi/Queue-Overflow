@@ -266,15 +266,17 @@ const QuestionsSlice = createSlice({
       state.error = action.payload;
     });
 
-     builder.addCase(signInWithEmail.pending, (state, action) => {
-      state.loading = true;
+     builder.addCase(signInWithGoogle.pending, (state, action) => {
+       state.loading = true;
+       state.user = "";
       state.error = "";
     });
-    builder.addCase(signInWithEmail.fulfilled, (state, action) => {
+    builder.addCase(signInWithGoogle.fulfilled, (state, action) => {
       state.loading = false;
+      state.user = action.payload;
       state.error = "";
     });
-    builder.addCase(signInWithEmail.rejected, (state, action) => {
+    builder.addCase(signInWithGoogle.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });
