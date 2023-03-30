@@ -3,7 +3,7 @@
   border: 1px solid #ccc;
   padding: 20px;
   margin-bottom: 20px;
-  height: 100vh;
+  
 }
 
 .accountTitle {
@@ -34,5 +34,24 @@
   border-style: none;
   background-color: #0a95ff;
   color: #ecf7ff;
+  cursor: pointer;
+}
+
+.questionsList{
+  margin: 10px 150px;
+}
+
+.userQuestionItem{
+  margin: 30px 150px;
+  text-align: start;
+  font-size: 1.1rem;
+  padding-left: 8px;
+  display: inline;
+}
+
+.deleteQuestionBtn{
+  margin-top: 30px;
+  margin-right: 60px;
+  padding: 4px 0;
   cursor: pointer;
 }

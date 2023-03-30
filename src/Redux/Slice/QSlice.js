@@ -55,6 +55,14 @@ export const addQuestion = createAsyncThunk(
   }
 );
 
+export const deleteQuestion = createAsyncThunk('delete', async ({id}, thunkApi) => {
+  try {
+    await axios.delete(QUESTIONS_API, id);
+  } catch (error) {
+    thunkApi.rejectWithValue(error);
+  }
+})
+
 export const addAnswer = createAsyncThunk(
   "answer/addanswer",
   async (payload, thunkApi) => {
@@ -148,7 +156,15 @@ export const signInWithGoogle = createAsyncThunk('googlesignup', async (payload,
   } catch (error) {
     thunkApi.rejectWithValue(error);
   }
-})
+});
+
+export const signOut = createAsyncThunk('signout', async (payload, thunkApi) => {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    thunkApi.rejectWithValue(error);
+  }
+});
 
 const QuestionsSlice = createSlice({
   name: "questions slice",
@@ -277,6 +293,20 @@ const QuestionsSlice = createSlice({
       state.error = "";
     });
     builder.addCase(signInWithGoogle.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(signOut.pending, (state, action) => {
+       state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(signOut.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+      state.error = "";
+    });
+    builder.addCase(signOut.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

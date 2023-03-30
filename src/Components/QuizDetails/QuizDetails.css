@@ -115,3 +115,13 @@
     font-size: 1.1rem;
     font-weight: 600;
 }
+
+.commentAuthor{
+    margin-top: 6px;
+    margin-right: 700px;
+}
+
+.ansAuthor{
+    margin: 10px 0 0 220px;
+    font-size: 0.8rem;   
+}

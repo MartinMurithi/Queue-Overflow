@@ -9,6 +9,7 @@ import {
   fetchComments,
 } from "../../Redux/Slice/QSlice";
 import "../QuizDetails/QuizDetails.css";
+import {auth} from '../../Redux/Slice/Firebase_config'
 
 function QuizDetails() {
   const dispatch = useDispatch();
@@ -44,6 +45,8 @@ function QuizDetails() {
       cid: Math.floor(Math.random() * 1000),
       answer: answer,
       upvote: 3,
+      author: auth.currentUser.displayName,
+      authorId: auth.currentUser.uid
     };
     dispatch(addAnswer(newAnswer));
     console.log(newAnswer);
@@ -72,6 +75,8 @@ function QuizDetails() {
     let newComment = {
       answerId: answerId,
       comment: commentInput,
+      author: auth.currentUser.displayName,
+      authorId: auth.currentUser.uid
     };
     dispatch(addComment(newComment));
     setShowComments(!showCommentsInput);
@@ -109,6 +114,7 @@ function QuizDetails() {
               return (
                 <div className="ansDisplay">
                   <p className="ans">{answer.answer}</p>
+                  <p className="ansAuthor">~{answer.author}</p>
                   <div className="utils">
                     <button
                       className="commentBtn"
@@ -146,7 +152,8 @@ function QuizDetails() {
                             if (comment.answerId === answer.cid) {
                               return (
                                 <div className="commentsDiv">
-                                  <p className="comment">~{comment.comment}</p>
+                                  <p className="comment">{comment.comment}</p>
+                                  <p className="commentAuthor">~{comment.author}</p>
                                 </div>
                               );
                             }

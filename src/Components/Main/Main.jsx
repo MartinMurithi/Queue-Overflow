@@ -1,8 +1,22 @@
 import React from "react";
 import "../Main/Main.css";
 import { FaSearch, FaLock, FaRocket, FaDatabase, FaCode, FaHeadset, FaAppStore} from "react-icons/fa";
+import { auth } from "../../Redux/Slice/Firebase_config";
+import {useNavigate} from 'react-router-dom'
 
 function Main() {
+
+  const navigate = useNavigate();
+
+  const redirect = () => {
+    const user = auth.currentUser;
+    if (user) {
+      navigate('/topquestions')
+    } else {
+      alert("You need to signin");
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -15,7 +29,7 @@ function Main() {
               Find the best answer to your technical question, help others
               answer theirs
             </p>
-            <button className="joinBtn">Join the community</button>
+            <button className="joinBtn" onClick={redirect}>Join the community</button>
           </div>
           <div id="viewCont" className="viewDiv">
             <div className="lkIcon" id="lockIcon">

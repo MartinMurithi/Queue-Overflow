@@ -1,9 +1,6 @@
 import './App.css';
 
 import { Routes, Route } from 'react-router-dom'
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import fetchQuestions from './Redux/Slice/QSlice'
 
 import Main from './Components/Main/Main';
 import Nav from './Components/NavBar/Nav';
@@ -14,6 +11,7 @@ import Signin from './Components/Logins/Signin';
 import Quiz from './Components/Questions/Quiz';
 import QuizDetails from './Components/QuizDetails/QuizDetails';
 import Account from './Components/Account/Account';
+import About from './Components/about/About';
 
 function App() {
 
@@ -29,6 +27,7 @@ function App() {
         <Route path='quizinput' element={<QuizInput/>} />
         <Route path='topquestions/:questionId' element={<QuizDetails/>} />
         <Route path='account' element={<Account/>} />
+        <Route path='about' element={<About/>} />
       </Routes>
     <Footer/>
 

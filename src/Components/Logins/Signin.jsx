@@ -23,7 +23,7 @@ function Signin() {
 
   const login = async () => {
     dispatch(signInWithGoogle());
-    navigate("/topquestions");
+    navigate("/");
   };
 
   const logout = async () => {};

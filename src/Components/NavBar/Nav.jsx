@@ -19,23 +19,23 @@ function Nav() {
             </NavLink>
           </div>
 
-          <div className="search">
+          {/* <div className="search">
             <input
               type="search"
               name=""
               id="searchIcon"
               placeholder={`search...`}
             />
-          </div>
+          </div> */}
 
           <div className="sign_log">
             <NavLink to="/account">
               <button className="logIn">M</button>
             </NavLink>
 
-            <NavLink to="/login">
+            {/* <NavLink to="/login">
               <button className="logIn">Log in</button>
-            </NavLink>
+            </NavLink> */}
             <NavLink to="/signin">
               <button className="signUp">Sign In</button>
             </NavLink>
