@@ -1,7 +1,11 @@
 import { async } from "@firebase/util";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth, googleAuth } from "./Firebase_config";
 
 const initialState = {
@@ -14,7 +18,7 @@ const initialState = {
   downvote: 0,
   email: "",
   password: "",
-  user: ""
+  user: "",
 };
 
 const QUESTIONS_API =
@@ -36,6 +40,7 @@ export const fetchQuestions = createAsyncThunk(
         let key = keys[i];
         data.push({ ...response.data[key], id: key }); //this line uses the spread operator to store all the objects and their properties corresponding to their key
       }
+      console.log(data);
       return data;
     } catch (error) {
       thunkApi.rejectWithValue(error);
@@ -55,13 +60,48 @@ export const addQuestion = createAsyncThunk(
   }
 );
 
-export const deleteQuestion = createAsyncThunk('delete', async ({id}, thunkApi) => {
-  try {
-    await axios.delete(QUESTIONS_API, id);
-  } catch (error) {
-    thunkApi.rejectWithValue(error);
+export const deleteQuestion = createAsyncThunk(
+  "delete/question",
+  async (id, thunkApi) => {
+    try {
+      let response = await axios.delete(
+        `https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions/${id}.json`
+      );
+      console.log(response);
+      thunkApi.dispatch(fetchQuestions());
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
   }
-})
+);
+
+export const deleteAnswer = createAsyncThunk(
+  "delete/answer",
+  async (id, thunkApi) => {
+    try {
+      let response = await axios.delete(
+        `https://queueoverflow-a52c5-default-rtdb.firebaseio.com/answers/${id}.json`
+      );
+      thunkApi.dispatch(fetchAnswers());
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "delete/comment",
+  async (id, thunkApi) => {
+    try {
+      let response = await axios.delete(
+        `https://queueoverflow-a52c5-default-rtdb.firebaseio.com/comments/${id}.json`
+      );
+      thunkApi.dispatch(fetchComments());
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
+  }
+);
 
 export const addAnswer = createAsyncThunk(
   "answer/addanswer",
@@ -126,45 +166,60 @@ export const fetchComments = createAsyncThunk(
 
 export const signUpWithEmail = createAsyncThunk(
   "signup/users",
-  async ({email, password}, thunkApi) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(userCredential.user);
-    console.log('create ac');
-    console.log(userCredential.user);
-    return userCredential;
-  } catch (error) {
-    thunkApi.rejectWithValue(error.message);
+  async ({ email, password }, thunkApi) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      return userCredential;
+    } catch (error) {
+      thunkApi.rejectWithValue(error.message);
+    }
   }
-  });
+);
 
-export const signInWithEmail = createAsyncThunk("login/users", async({ email, password }, thunkApi) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log('user loged in');
-    console.log(userCredential.user);
-    return userCredential;
-  } catch (error) {
-    thunkApi.rejectWithValue(error);
+export const signInWithEmail = createAsyncThunk(
+  "login/users",
+  async ({ email, password }, thunkApi) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("user loged in");
+      console.log(userCredential.user);
+      return userCredential;
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
   }
-});
+);
 
-export const signInWithGoogle = createAsyncThunk('googlesignup', async (payload, thunkApi) => {
-  try {
-    const user = await signInWithPopup(auth, googleAuth);
-    console.log(user);
-  } catch (error) {
-    thunkApi.rejectWithValue(error);
+export const signInWithGoogle = createAsyncThunk(
+  "googlesignup",
+  async (payload, thunkApi) => {
+    try {
+      const user = await signInWithPopup(auth, googleAuth);
+      console.log(user);
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
   }
-});
+);
 
-export const signOut = createAsyncThunk('signout', async (payload, thunkApi) => {
-  try {
-    await auth.signOut();
-  } catch (error) {
-    thunkApi.rejectWithValue(error);
+export const signOut = createAsyncThunk(
+  "signout",
+  async (payload, thunkApi) => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      thunkApi.rejectWithValue(error);
+    }
   }
-});
+);
 
 const QuestionsSlice = createSlice({
   name: "questions slice",
@@ -282,9 +337,9 @@ const QuestionsSlice = createSlice({
       state.error = action.payload;
     });
 
-     builder.addCase(signInWithGoogle.pending, (state, action) => {
-       state.loading = true;
-       state.user = "";
+    builder.addCase(signInWithGoogle.pending, (state, action) => {
+      state.loading = true;
+      state.user = "";
       state.error = "";
     });
     builder.addCase(signInWithGoogle.fulfilled, (state, action) => {
@@ -298,7 +353,7 @@ const QuestionsSlice = createSlice({
     });
 
     builder.addCase(signOut.pending, (state, action) => {
-       state.loading = true;
+      state.loading = true;
       state.error = "";
     });
     builder.addCase(signOut.fulfilled, (state, action) => {
@@ -311,6 +366,45 @@ const QuestionsSlice = createSlice({
       state.error = action.payload;
     });
 
+    // Delete a question
+    builder.addCase(deleteQuestion.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(deleteQuestion.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(deleteQuestion.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(deleteAnswer.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(deleteAnswer.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(deleteAnswer.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(deleteComment.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(deleteComment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
   },
 });
 

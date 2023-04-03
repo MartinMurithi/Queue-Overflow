@@ -23,10 +23,10 @@ function Signin() {
 
   const login = async () => {
     dispatch(signInWithGoogle());
-    navigate("/");
+    navigate("/topquestions");
   };
 
-  const logout = async () => {};
+ 
 
   return (
     <div className="signinForm">

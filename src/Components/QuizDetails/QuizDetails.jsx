@@ -33,6 +33,7 @@ function QuizDetails() {
   useEffect(() => {
     let question = questions.find((question) => question.id === questionId);
     setQuestion(question);
+    dispatch(fetchQuestions());
   }, []);
 
   const hadleAnswerInput = (event) => {
@@ -87,7 +88,14 @@ function QuizDetails() {
   }, []);
 
   const handleDisplayComments = (id) => {
-    setDisplayComments(!displayComments);
+    answers.map(answer => {
+      if (id === answer.cid) {
+        console.log(id);
+        console.log(answer.cid);
+      setDisplayComments(!displayComments);
+    }
+    })
+    // console.log(comments);
   };
 
   return (
@@ -140,9 +148,9 @@ function QuizDetails() {
                       </div>
                     )}
                     <button className="acceptAnsBtn">Accept as answer</button>
-                    {/* <button className="ansAuthor">{answer?.author}</button> */}
+                    <button className="ansAuthor">{answer?.author}</button>
 
-                    <button className="showComments" onClick={()=>handleDisplayComments(answer.cid)}>Show comments</button>
+                    <button className="showComments" onClick={() => handleDisplayComments(answer.cid)}>Show comments</button>
                   </div>
 
                   {displayComments && (

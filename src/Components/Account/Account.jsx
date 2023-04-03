@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import "../Account/Account.css";
 import { auth } from "../../Redux/Slice/Firebase_config";
 import {useDispatch, useSelector} from 'react-redux'
-import { fetchAnswers, fetchQuestions, signOut } from "../../Redux/Slice/QSlice";
+import { fetchAnswers, fetchQuestions, signOut, deleteQuestion, deleteComment, deleteAnswer } from "../../Redux/Slice/QSlice";
+import { useNavigate } from "react-router-dom";
 
 function Account() {
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [id, setId] = useState("");
 
@@ -13,27 +14,34 @@ function Account() {
     return state
   });
 
-
-  console.log(questions.answers);
-
-
   const logOut = () => {
     dispatch(signOut());
-    console.log('loooooooooool');
+    navigate('/signin');
   }
 
   useEffect(() => {
-    let ID = auth.currentUser.uid;
+    let ID = auth.currentUser?.uid;
     setId(ID)
-    dispatch(fetchQuestions());
-    dispatch(fetchAnswers())
+    // dispatch(fetchQuestions());
+    dispatch(fetchAnswers());
   }, []);
+
   
-  const fetchUserQuestions = () => {
-    
+  const deleteQuestions = (qId) => {
+    dispatch(deleteQuestion(qId));
+    console.log(qId);
   }
 
-  console.log(id);
+  const deleteAnswers = (aId) => {
+    dispatch(deleteAnswer(aId));
+    console.log(aId);
+  }
+
+  const deleteComments = (cId) => {
+    dispatch(deleteComment(cId));
+    console.log(cId);
+  }
+
   return (
     <>
       <div className="account">
@@ -44,7 +52,7 @@ function Account() {
         <div className="accountDetails">
           
           <div className="imgDiv">
-            <img src={auth.currentUser?.photoURL} alt="" height={100} width100/>
+            <img src={auth.currentUser?.photoURL} alt="" height={100} width={100} />
           </div>
           <div className="details">
             <p className="userInfo">Display name :  {auth.currentUser?.displayName}</p>
@@ -63,7 +71,7 @@ function Account() {
                   return (
                     <div>
                       <p className="userQuestionItem">{question.title}</p>
-                      {/* <button  className="deleteQuestionBtn">Delete</button> */}
+                      <button className="deleteQuestionBtn" onClick={() => {deleteQuestions(question.id) }}>Delete</button>
                     </div>
                     
                   )
@@ -81,13 +89,13 @@ function Account() {
                   return (
                     <div>
                       <p className="userQuestionItem">{answer.answer}</p>
-                      {/* <button  className="deleteQuestionBtn">Delete</button> */}
+                      <button  className="deleteQuestionBtn" onClick={()=>deleteAnswers(answer.id)}>Delete</button>
                     </div>
                     
                   )
                 }
               })
-            :null}
+            :<h5>You have not answered ny question</h5>}
           </div>
 
            <div className="userQuestions">
@@ -99,13 +107,13 @@ function Account() {
                   return (
                     <div>
                       <p className="userQuestionItem">{comment.comment}</p>
-                      {/* <button  className="deleteQuestionBtn">Delete</button> */}
+                      <button  className="deleteQuestionBtn" onClick={()=>{deleteComments(comment.id)}}>Delete</button>
                     </div>
                     
                   )
                 }
               })
-            :null}
+            :<h5>You have not commented on any question</h5>}
           </div>
         </div>
       </div>
