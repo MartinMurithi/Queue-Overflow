@@ -1,3 +1,7 @@
+#Queue overflow
+Queue overflow(stack overflow lite), a web application that allows users to askquestions, answer questions, comment on answers, delete their questions, answers and comments. Users are required to sign-in with their google account and on their account's page, he/she will be able to see all their activities.
+Technologies used : React, Redux Toolkit, CSS3, firebase realtime database and firebase authentication. 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

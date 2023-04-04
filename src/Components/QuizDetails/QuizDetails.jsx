@@ -95,8 +95,9 @@ function QuizDetails() {
       setDisplayComments(!displayComments);
     }
     })
-    // console.log(comments);
   };
+
+  
 
   return (
     <div className="detailsPage">

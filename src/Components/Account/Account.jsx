@@ -14,6 +14,7 @@ function Account() {
     return state
   });
 
+  console.log(questions.loading);
   const logOut = () => {
     dispatch(signOut());
     navigate('/signin');
@@ -22,14 +23,21 @@ function Account() {
   useEffect(() => {
     let ID = auth.currentUser?.uid;
     setId(ID)
-    // dispatch(fetchQuestions());
+    if (questions.loading) {
+      return <h5>Loading....</h5>
+    }
     dispatch(fetchAnswers());
   }, []);
 
   
   const deleteQuestions = (qId) => {
     dispatch(deleteQuestion(qId));
-    console.log(qId);
+  }
+
+  function editQuestion(id, question) {
+    console.log(id);
+    navigate('/quizinput');
+    dispatch(editQuestion(question));
   }
 
   const deleteAnswers = (aId) => {
@@ -65,12 +73,13 @@ function Account() {
           <div className="userQuestions">
 
             <h3 className="questionsList">Your questions</h3>
-            {questions.questions.length > 0 ? 
+            {questions.questions && questions.questions.length > 0 ? 
               questions.questions.map(question => {
                 if (question.authorId === id) {
                   return (
                     <div>
                       <p className="userQuestionItem">{question.title}</p>
+                      <button className="deleteQuestionBtn" onClick={() => {editQuestion(question.id) }}>Edit</button>
                       <button className="deleteQuestionBtn" onClick={() => {deleteQuestions(question.id) }}>Delete</button>
                     </div>
                     
@@ -83,12 +92,13 @@ function Account() {
            <div className="userQuestions">
 
             <h3 className="questionsList">Your answers</h3>
-            {questions.answers.length > 0 ? 
+            {questions.answers && questions.answers.length > 0 ? 
               questions.answers.map(answer => {
                 if (answer.authorId === id) {
                   return (
                     <div>
                       <p className="userQuestionItem">{answer.answer}</p>
+                      <button  className="deleteQuestionBtn" onClick={()=>deleteAnswers(answer.id)}>Edit</button>
                       <button  className="deleteQuestionBtn" onClick={()=>deleteAnswers(answer.id)}>Delete</button>
                     </div>
                     
@@ -107,6 +117,7 @@ function Account() {
                   return (
                     <div>
                       <p className="userQuestionItem">{comment.comment}</p>
+                      <button  className="deleteQuestionBtn" onClick={()=>{deleteComments(comment.id)}}>Edit</button>
                       <button  className="deleteQuestionBtn" onClick={()=>{deleteComments(comment.id)}}>Delete</button>
                     </div>
                     

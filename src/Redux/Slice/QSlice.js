@@ -14,6 +14,9 @@ const initialState = {
   questions: [],
   answers: [],
   comments: [],
+  question: "",
+  answer: "",
+  comment: "",
   upvotes: 0,
   downvote: 0,
   email: "",
@@ -102,6 +105,16 @@ export const deleteComment = createAsyncThunk(
     }
   }
 );
+
+export const editQuestion = createAsyncThunk('edit/question', async (payload, thunkApi) => {
+  try {
+    let newQuestion = await axios.patch(`https://queueoverflow-a52c5-default-rtdb.firebaseio.com/questions/${payload.id}.json`, { ...payload });
+    console.log(payload.id);
+    thunkApi.dispatch(fetchQuestions());
+  } catch (error) {
+    thunkApi.rejectWithValue(error);
+  }
+})
 
 export const addAnswer = createAsyncThunk(
   "answer/addanswer",
@@ -235,13 +248,13 @@ const QuestionsSlice = createSlice({
       state.loading = true;
       state.error = "";
       state.questions = [];
-    });
-    builder.addCase(fetchQuestions.fulfilled, (state, action) => {
+    })
+    .addCase(fetchQuestions.fulfilled, (state, action) => {
       state.loading = false;
       state.error = "";
       state.questions = action.payload;
-    });
-    builder.addCase(fetchQuestions.rejected, (state, action) => {
+    })
+    .addCase(fetchQuestions.rejected, (state, action) => {
       console.log("Rejected");
       state.loading = false;
       state.error = action.payload;
@@ -402,6 +415,19 @@ const QuestionsSlice = createSlice({
       state.error = "";
     });
     builder.addCase(deleteComment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(editQuestion.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(editQuestion.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+    });
+    builder.addCase(editQuestion.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });
